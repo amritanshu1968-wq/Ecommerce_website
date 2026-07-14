@@ -4,9 +4,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-# ---------------------------------------------------------
+
 # Page Config (First calling page config)
-# ---------------------------------------------------------
+
 st.set_page_config(
     page_title="Ecommerce Sales Dashboard",
     page_icon="🛒",
@@ -15,9 +15,8 @@ st.set_page_config(
 
 sns.set_style("whitegrid")
 
-# ---------------------------------------------------------
 # Data Load + Clean (Load Dataset)
-# ---------------------------------------------------------
+
 DATA_PATH = "data.csv"   
 
 
@@ -49,9 +48,8 @@ def load_data(path):
 
 df_clean = load_data(DATA_PATH)
 
-# ---------------------------------------------------------
 # Sidebar Filters 
-# ---------------------------------------------------------
+
 st.sidebar.header("Filters")
 
 countries = sorted(df_clean["Country"].unique().tolist())
@@ -75,15 +73,14 @@ if len(date_range) == 2:
 
 filtered = df_clean[mask]
 
-# ---------------------------------------------------------
 # Title
-# ---------------------------------------------------------
+
 st.title("Ecommerce Sales Dashboard")
 st.markdown("Interactive view of revenue, products, customers aur trends.")
 
-# ---------------------------------------------------------
+
 # KPI Cards (top metrics row)
-# ---------------------------------------------------------
+
 total_revenue = filtered["TotalPrice"].sum()
 total_orders = filtered["InvoiceNo"].nunique()
 total_customers = filtered["CustomerID"].nunique()
@@ -97,9 +94,9 @@ col4.metric("Avg Order Value", f"£{avg_order_value:,.2f}")
 
 st.markdown("---")
 
-# ---------------------------------------------------------
+
 # Row 1: Monthly Trend + Top Countries
-# ---------------------------------------------------------
+
 row1_col1, row1_col2 = st.columns(2)
 
 with row1_col1:
@@ -124,9 +121,8 @@ with row1_col2:
     ax.set_xlabel("Revenue (£)")
     st.pyplot(fig)
 
-# ---------------------------------------------------------
 # Row 2: Top Products + Order Value Distribution
-# ---------------------------------------------------------
+
 row2_col1, row2_col2 = st.columns(2)
 
 with row2_col1:
@@ -150,9 +146,9 @@ with row2_col2:
     ax.set_xlabel("Order Value (£)")
     st.pyplot(fig)
 
-# ---------------------------------------------------------
+
 # Row 3: Sales by Day of Week + Hour
-# ---------------------------------------------------------
+
 row3_col1, row3_col2 = st.columns(2)
 
 day_order = ["Monday", "Tuesday", "Wednesday", "Thursday",
@@ -178,9 +174,8 @@ with row3_col2:
     ax.set_ylabel("Revenue (£)")
     st.pyplot(fig)
 
-# ---------------------------------------------------------
 # Row 4: Top Customers Table
-# ---------------------------------------------------------
+
 st.subheader("👤 Top 10 Customers by Spend")
 customer_summary = filtered.groupby("CustomerID").agg(
     TotalSpent=("TotalPrice", "sum"),
@@ -191,8 +186,8 @@ customer_summary = filtered.groupby("CustomerID").agg(
 
 st.dataframe(customer_summary, use_container_width=True)
 
-# ---------------------------------------------------------
+
 # Raw Data (optional expandable section)
-# ---------------------------------------------------------
+
 with st.expander("Raw Filtered Data Insight"):
     st.dataframe(filtered.head(500), use_container_width=True)
